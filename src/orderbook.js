@@ -68,7 +68,7 @@ function OrderBook(remote,
   // Transfer rate of the taker gets currency issuer
   this._issuerTransferRate = null;
 
-  // When orderbook is IOU/IOU, there will be IOU/XRP and XRP/IOU
+  // When orderbook is IOU/IOU, there will be IOU/ICC and ICC/IOU
   // books that we must keep track of to compute autobridged offers
   this._legOneBook = null;
   this._legTwoBook = null;
@@ -115,7 +115,7 @@ function OrderBook(remote,
 
   if (this._isAutobridgeable) {
     this._legOneBook = remote.createOrderBook({
-      currency_gets: 'XRP',
+      currency_gets: 'ICC',
       currency_pays: currencyPays,
       issuer_pays: issuerPays
     });
@@ -123,7 +123,7 @@ function OrderBook(remote,
     this._legTwoBook = remote.createOrderBook({
       currency_gets: currencyGets,
       issuer_gets: issuerGets,
-      currency_pays: 'XRP'
+      currency_pays: 'ICC'
     });
   }
 
@@ -1345,7 +1345,7 @@ OrderBook.prototype.is_valid = function() {
 
 /**
  * Compute autobridged offers for an IOU:IOU orderbook by merging offers from
- * IOU:XRP and XRP:IOU books
+ * IOU:ICC and ICC:IOU books
  */
 
 OrderBook.prototype.computeAutobridgedOffers = function(callback = function() {}

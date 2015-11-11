@@ -8,8 +8,8 @@ const convertBase = require('./baseconverter');
 const Base = {};
 
 const alphabets = Base.alphabets = {
-  ripple: 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz',
-  tipple: 'RPShNAF39wBUDnEGHJKLM4pQrsT7VWXYZ2bcdeCg65jkm8ofqi1tuvaxyz',
+  ripple: 'ipshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqr1tuvAxyz', // wangch r <--> i
+  tipple: 'RPShNAF39wBUDnEGHJKLM4pQisT7VWXYZ2bcdeCg65jkm8ofqr1tuvaxyz',
   bitcoin: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 };
 

@@ -344,7 +344,7 @@ function(takerGets, takerPays) {
  * is not fully funded. Leg one out goes to leg two in and since its the same
  * account, an infinite amount can flow.
  *
- * @param {Object} legOneOffer - IOU:XRP offer
+ * @param {Object} legOneOffer - IOU:ICC offer
  */
 
 AutobridgeCalculator.prototype.unclampLegOneOwnerFunds = function(legOneOffer) {
@@ -369,7 +369,7 @@ AutobridgeCalculator.prototype.unclampLegOneOwnerFunds = function(legOneOffer) {
  * case, we have extra funds we can use towards unfunded offers with worse
  * quality by the same owner.
  *
- * @param {Object} legOneOffer - IOU:XRP offer
+ * @param {Object} legOneOffer - IOU:ICC offer
  */
 
 AutobridgeCalculator.prototype.clampLegOneOwnerFunds = function(legOneOffer) {
@@ -392,7 +392,7 @@ AutobridgeCalculator.prototype.clampLegOneOwnerFunds = function(legOneOffer) {
  * Increase leg one offer funded amount with extra funds found after applying
  * clamp.
  *
- * @param {Object} legOneOffer - IOU:XRP offer
+ * @param {Object} legOneOffer - IOU:ICC offer
  */
 
 AutobridgeCalculator.prototype.adjustLegOneFundedAmount =
@@ -418,10 +418,10 @@ function(legOneOffer) {
 };
 
 /**
- * Set taker gets funded amount for a IOU:XRP offer. Also calculates taker
+ * Set taker gets funded amount for a IOU:ICC offer. Also calculates taker
  * pays funded using offer quality and updates is_fully_funded flag
  *
- * @param {Object} legOneOffer - IOU:XRP offer
+ * @param {Object} legOneOffer - IOU:ICC offer
  * @param {Amount} takerGetsFunded
  */
 
@@ -441,10 +441,10 @@ function setLegOneTakerGetsFunded(legOneOffer, takerGetsFunded) {
 };
 
 /**
- * Set taker gets amount for a IOU:XRP offer. Also calculates taker pays
+ * Set taker gets amount for a IOU:ICC offer. Also calculates taker pays
  * using offer quality
  *
- * @param {Object} legOneOffer - IOU:XRP offer
+ * @param {Object} legOneOffer - IOU:ICC offer
  * @param {Amount} takerGets
  */
 

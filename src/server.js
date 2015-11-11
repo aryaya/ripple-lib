@@ -834,7 +834,7 @@ Server.prototype.isConnected = Server.prototype._isConnected = function() {
  * Calculate transaction fee
  *
  * @param {Transaction|Number} Fee units for a provided transaction
- * @return {String} Final fee in XRP for specified number of fee units
+ * @return {String} Final fee in ICC for specified number of fee units
  * @api private
  */
 
@@ -852,7 +852,7 @@ Server.prototype._computeFee = function(feeUnits) {
  * This takes into account the last known network and local load fees.
  *
  * @param {Number} Fee units for a provided transaction
- * @return {Amount} Final fee in XRP for specified number of fee units.
+ * @return {Amount} Final fee in ICC for specified number of fee units.
  */
 
 Server.prototype._feeTx = function(units) {

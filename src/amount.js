@@ -23,11 +23,11 @@ function inverse(number) {
 
 function Amount() {
   // Json format:
-  //  integer : XRP
+  //  integer : ICC
   //  { 'value' : ..., 'currency' : ..., 'issuer' : ...}
 
   this._value = new BigNumber(NaN);
-  this._is_native = true; // Default to XRP. Only valid if value is not NaN.
+  this._is_native = true; // Default to ICC. Only valid if value is not NaN.
   this._currency = new Currency();
   this._issuer = new UInt160();
 }
@@ -61,10 +61,10 @@ var consts = {
   cMinOffset: -96,
   cMaxOffset: 80,
 
-  // Maximum possible amount for non-XRP currencies using the maximum mantissa
+  // Maximum possible amount for non-ICC currencies using the maximum mantissa
   // with maximum exponent. Corresponds to hex 0xEC6386F26FC0FFFF.
   max_value: '9999999999999999e80',
-  // Minimum possible amount for non-XRP currencies.
+  // Minimum possible amount for non-ICC currencies.
   min_value: '-1000000000000000e-96'
 };
 
@@ -183,7 +183,7 @@ Amount.prototype.divide = function(divisor) {
  * objects.
  *
  * The return value will have the same type (currency) as the numerator. This is
- * a simplification, which should be sane in most cases. For example, a USD/XRP
+ * a simplification, which should be sane in most cases. For example, a USD/ICC
  * price would be rendered as USD.
  *
  * @example
@@ -222,9 +222,9 @@ Amount.prototype.ratio_human = function(denominator, opts) {
     denominator = denominator.applyInterest(opts.reference_date);
   }
 
-  // Special case: The denominator is a native (XRP) amount.
+  // Special case: The denominator is a native (ICC) amount.
   //
-  // In that case, it's going to be expressed as base units (1 XRP =
+  // In that case, it's going to be expressed as base units (1 ICC =
   // 10^xns_precision base units).
   //
   // However, the unit of the denominator is lost, so when the resulting ratio
@@ -243,10 +243,10 @@ Amount.prototype.ratio_human = function(denominator, opts) {
  * Calculate a product of two amounts.
  *
  * This function allows you to calculate a product between two amounts which
- * retains XRPs human/external interpretation (i.e. 1 XRP = 1,000,000 base
+ * retains XRPs human/external interpretation (i.e. 1 ICC = 1,000,000 base
  * units).
  *
- * Intended use is to calculate something like: 10 USD * 10 XRP/USD = 100 XRP
+ * Intended use is to calculate something like: 10 USD * 10 ICC/USD = 100 ICC
  *
  * @example
  *   var sell_amount = buy_amount.product_human(price);
@@ -280,8 +280,8 @@ Amount.prototype.product_human = function(factor, opts) {
 
   var product = this.multiply(factor);
 
-  // Special case: The second factor is a native (XRP) amount expressed as base
-  // units (1 XRP = 10^xns_precision base units).
+  // Special case: The second factor is a native (ICC) amount expressed as base
+  // units (1 ICC = 10^xns_precision base units).
   //
   // See also Amount#ratio_human.
   if (factor._is_native) {
@@ -465,10 +465,10 @@ Amount.prototype.negate = function() {
  *
  * Examples:
  *
- *   XRP 250     => 250000000/XRP
- *   25.2 XRP    => 25200000/XRP
+ *   ICC 250     => 250000000/ICC
+ *   25.2 ICC    => 25200000/ICC
  *   USD 100.40  => 100.4/USD/?
- *   100         => 100000000/XRP
+ *   100         => 100000000/ICC
  *
  *
  * The regular expression below matches above cases, broken down for better
@@ -502,7 +502,7 @@ Amount.prototype.parse_human = function(j, opts) {
   if (words.length === 1) {
     if (isNumber(words[0])) {
       value = words[0];
-      currency = 'XRP';
+      currency = 'ICC';
     } else {
       value = words[0].slice(0, -3);
       currency = words[0].slice(-3);
@@ -529,7 +529,7 @@ Amount.prototype.parse_human = function(j, opts) {
 
   currency = currency.toUpperCase();
   this.set_currency(currency);
-  this._is_native = (currency === 'XRP');
+  this._is_native = (currency === 'ICC');
   this._set_value(new BigNumber(value));
 
   // Apply interest/demurrage
@@ -574,10 +574,10 @@ Amount.prototype.parse_issuer = function(issuer) {
  * @param {Date|Number} opts.reference_date Date based on which
  * demurrage/interest should be applied. Can be given as JavaScript Date or int
  * for Ripple epoch.
- * @param {Boolean} opts.xrp_as_drops Whether XRP amount should be treated as
- *   drops. When the base currency is XRP, the quality is calculated in drops.
- *   For human use however, we want to think of 1000000 drops as 1 XRP and
- *   prices as per-XRP instead of per-drop.
+ * @param {Boolean} opts.xrp_as_drops Whether ICC amount should be treated as
+ *   drops. When the base currency is ICC, the quality is calculated in drops.
+ *   For human use however, we want to think of 1000000 drops as 1 ICC and
+ *   prices as per-ICC instead of per-drop.
  * @return {Amount} self
  */
 Amount.prototype.parse_quality =
@@ -598,7 +598,7 @@ function(quality, counterCurrency, counterIssuer, opts) {
   this._is_native = this._currency.is_native();
 
   if (this._is_native && baseCurrency.is_native()) {
-    throw new Error('XRP/XRP quality is not allowed');
+    throw new Error('ICC/ICC quality is not allowed');
   }
 
   /*
@@ -625,11 +625,11 @@ function(quality, counterCurrency, counterIssuer, opts) {
     //    gets ~= baseCurrency.
     if (this._is_native) {
       // pay:$price              drops  get:1 X
-      // pay:($price / 1,000,000)  XRP  get:1 X
+      // pay:($price / 1,000,000)  ICC  get:1 X
       nativeAdjusted = adjusted.div(Amount.bi_xns_unit);
     } else if (baseCurrency.is_valid() && baseCurrency.is_native()) {
       // pay:$price X                   get:1 drop
-      // pay:($price * 1,000,000) X     get:1 XRP
+      // pay:($price * 1,000,000) X     get:1 ICC
       nativeAdjusted = adjusted.times(Amount.bi_xns_unit);
     }
   }
@@ -689,7 +689,7 @@ Amount.prototype.parse_json = function(j) {
         j.copyTo(this);
       } else if (j.hasOwnProperty('value')) {
         // Parse the passed value to sanitize and copy it.
-        this._currency.parse_json(j.currency, true); // Never XRP.
+        this._currency.parse_json(j.currency, true); // Never ICC.
 
         if (typeof j.issuer === 'string') {
           this._issuer.parse_json(j.issuer);
@@ -706,7 +706,7 @@ Amount.prototype.parse_json = function(j) {
   return this;
 };
 
-// Parse a XRP value from untrusted input.
+// Parse a ICC value from untrusted input.
 // - integer = raw units
 // - float = with precision 6
 // XXX Improvements: disallow leading zeros.
@@ -961,7 +961,7 @@ Amount.prototype.to_text_full = function(opts) {
     return 'NaN';
   }
   return this._is_native
-      ? this.to_human() + '/XRP'
+      ? this.to_human() + '/ICC'
       : this.to_text() + '/' + this._currency.to_json()
         + '/' + this._issuer.to_json(opts);
 };
@@ -981,7 +981,7 @@ Amount.prototype.not_equals_why = function(d, ignore_issuer) {
     return 'Native mismatch.';
   }
 
-  var type = this._is_native ? 'XRP' : 'Non-XRP';
+  var type = this._is_native ? 'ICC' : 'Non-ICC';
   if (!this._value.isZero() && this._value.negated().equals(d._value)) {
     return type + ' sign differs.';
   }
@@ -990,10 +990,10 @@ Amount.prototype.not_equals_why = function(d, ignore_issuer) {
   }
   if (!this._is_native) {
     if (!this._currency.equals(d._currency)) {
-      return 'Non-XRP currency differs.';
+      return 'Non-ICC currency differs.';
     }
     if (!ignore_issuer && !this._issuer.equals(d._issuer)) {
-      return 'Non-XRP issuer differs: '
+      return 'Non-ICC issuer differs: '
       + d._issuer.to_json()
       + '/'
       + this._issuer.to_json();

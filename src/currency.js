@@ -10,11 +10,11 @@ var Float = require('./ieee754').Float;
 //
 
 var Currency = extend(function() {
-  // Internal form: 0 = XRP. 3 letter-code.
+  // Internal form: 0 = ICC. 3 letter-code.
   // XXX Internal should be 0 or hex with three letter annotation when valid.
 
   // Json form:
-  //  '', 'XRP', '0': 0
+  //  '', 'ICC', '0': 0
   //  3-letter code: ...
   // XXX Should support hex, C++ doesn't currently allow it.
 
@@ -91,7 +91,7 @@ Currency.prototype.parse_json = function(j, shouldInterpretXrpAsIou) {
       break;
     case 'string':
       if (!j || j === '0') {
-        // Empty string or XRP
+        // Empty string or ICC
         this.parse_hex(shouldInterpretXrpAsIou
           ? Currency.HEX_CURRENCY_BAD
           : Currency.HEX_ZERO);
@@ -116,15 +116,15 @@ Currency.prototype.parse_json = function(j, shouldInterpretXrpAsIou) {
       if (matches) {
         var currencyCode = matches[1];
 
-        // for the currency 'XRP' case
+        // for the currency 'ICC' case
         // we drop everything else that could have been provided
-        // e.g. 'XRP - Ripple'
-        if (!currencyCode || /^(0|XRP)$/.test(currencyCode)) {
+        // e.g. 'ICC - Ripple'
+        if (!currencyCode || /^(0|ICC)$/.test(currencyCode)) {
           this.parse_hex(shouldInterpretXrpAsIou
             ? Currency.HEX_CURRENCY_BAD
             : Currency.HEX_ZERO);
 
-          // early break, we can't have interest on XRP
+          // early break, we can't have interest on ICC
           break;
         }
 
@@ -231,7 +231,7 @@ Currency.prototype._update = function() {
 
     if (this._iso_code === '\u0000\u0000\u0000') {
       this._native = true;
-      this._iso_code = 'XRP';
+      this._iso_code = 'ICC';
     }
 
     this._type = 0;
@@ -266,7 +266,7 @@ Currency.prototype.parse_bytes = function(byte_array) {
       var currencyCode = String.fromCharCode(byte_array[12])
       + String.fromCharCode(byte_array[13])
       + String.fromCharCode(byte_array[14]);
-      if (/^[A-Z0-9]{3}$/.test(currencyCode) && currencyCode !== 'XRP' ) {
+      if (/^[A-Z0-9]{3}$/.test(currencyCode) && currencyCode !== 'ICC' ) {
         this._value = currencyCode;
       } else if (currencyCode === '\0\0\0') {
         this._value = 0;
@@ -350,7 +350,7 @@ Currency.prototype.get_interest_percentage_at
 Currency.prototype.to_json = function(opts) {
   if (!this.is_valid()) {
     // XXX This is backwards compatible behavior, but probably not very good.
-    return 'XRP';
+    return 'ICC';
   }
 
   if (!opts) {

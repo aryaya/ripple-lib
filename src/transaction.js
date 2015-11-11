@@ -827,7 +827,7 @@ Transaction.prototype.addMemo = function(options_) {
  *
  * asfRequireDest:    Require a destination tag
  * asfRequireAuth:    Authorization is required to extend trust
- * asfDisallowXRP:    XRP should not be sent to this account
+ * asfDisallowXRP:    ICC should not be sent to this account
  * asfDisableMaster:  Disallow use of the master key
  * asfNoFreeze:       Permanently give up the ability to freeze individual
  *                    trust lines. This flag can never be cleared.
